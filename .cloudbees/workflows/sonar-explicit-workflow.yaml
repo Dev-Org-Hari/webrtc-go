@@ -52,7 +52,14 @@ jobs:
       - name: Print policy input
         uses: docker://alpine:latest
         shell: sh
+        env:
+          ORG: ${{ cloudbees.org.id }}
+          ACCESS_KEY: ${{ cloudbees.api.token }}
+          URL: ${{ cloudbees.api.url }}
         run: |
+          echo "$URL"
+          echo "$ORG"
+          echo "Authorization: Bearer $ACCESS_KEY"
           cat /cloudbees/workspace/policy-input.json
 
       # - id: check-vulnerabilities
