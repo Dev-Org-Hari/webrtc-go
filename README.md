@@ -1,7 +1,7 @@
 <h1 align="center">
   <a href="https://pion.ly"><img src="./.github/pion-gopher-webrtc.png" alt="Pion WebRTC" height="250px"></a>
   <br>
-  Pion WebRTC 
+  Pion WebRTC    
   <br>
 </h1>
 <h4 align="center">A pure Go implementation of the WebRTC API</h4>
