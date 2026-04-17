@@ -11,7 +11,7 @@ jobs:
   build:
     steps:
       - name: checkout-source-code
-        uses: cloudbees-io/checkout@v3
+        uses: cloudbees-io/checkout@v1
         with:
           repository: https://github.com/hkanakaraj/nodejs500
           ref: main
