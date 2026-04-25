@@ -11,13 +11,14 @@ jobs:
   scan-and-evaluate:
     steps:
       - name: checkout-source-code
-        uses: cloudbees-io/checkout@v1
-        with: 
+        uses: cloudbees-io/checkout@v2
+        with:
+          repository: https://github.com/Dev-Org-Hari/webrtc-go
           path: "webrtc-repo"
 
       - name: Run Gosec Scan
         id: gosec-step
-        uses: cloudbees-io/gosec-plugin@v1
+        uses: cloudbees-io/gosec-plugin@CBP-40852
         with:
             workspace-dir: "webrtc-repo"
 
@@ -48,14 +49,14 @@ jobs:
           done
 
       - name: checkout-source-code-1
-        uses: cloudbees-io/checkout@v1
+        uses: cloudbees-io/checkout@v2
         with:
           repository: https://github.com/fintech-bank-1/gosec-count
           path: gosec-count
 
       - name: Run Gosec Scan 1
         id: gosec-step-1
-        uses: cloudbees-io/gosec-plugin@v1
+        uses: cloudbees-io/gosec-plugin@CBP-40852
         with:
             workspace-dir: gosec-count
 
