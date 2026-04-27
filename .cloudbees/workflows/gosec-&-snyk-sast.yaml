@@ -1,0 +1,118 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: gosec & snyk sast
+on:
+  workflow_dispatch: {}
+permissions:
+  scm-token-own: read
+  scm-token-org: read
+  id-token: write
+jobs:
+  scan-and-evaluate:
+    steps:
+      - name: checkout-source-code
+        uses: cloudbees-io/checkout@v2
+        with:
+          repository: https://github.com/Dev-Org-Hari/webrtc-go
+          path: "webrtc-repo"
+
+      - name: Run Gosec Scan
+        id: gosec-step
+        uses: cloudbees-io/gosec-plugin@CBP-40852
+        with:
+            workspace-dir: "webrtc-repo"
+
+      - id: print-gosec-outputs
+        name: Print gosec outputs
+        uses: docker://alpine:latest
+        run: |
+          echo "Gosec outputs:"
+          echo "Critical: ${{ steps.gosec-step.outputs.critical-count }}"
+          echo "Very high: ${{ steps.gosec-step.outputs.very-high-count }}"
+          echo "High: ${{ steps.gosec-step.outputs.high-count }}"
+          echo "Medium: ${{ steps.gosec-step.outputs.medium-count }}"
+          echo "Low: ${{ steps.gosec-step.outputs.low-count }}"
+          echo "Policy Subject: ${{ steps.gosec-step.outputs.policy-subject }}"
+          echo "CLOUDBEES_OUTPUTS directory: $CLOUDBEES_OUTPUTS"
+
+      - id: print-policy-subject
+        name: Print Policy subject
+        uses: docker://alpine:latest
+        run: |
+
+          echo "=== Files in $CLOUDBEES_OUTPUTS ==="                                                                                                                              
+          find "/cloudbees/workspace" -type f | while read file; do                                                                                                               
+            echo ""                                                                                                                                                               
+            echo "File: $file"                                                                                                                                                    
+            cat "$file"                                                                                                                                                           
+            echo "---"                                                                                                                                                            
+          done
+
+      - name: checkout-source-code-1
+        uses: cloudbees-io/checkout@v2
+        with:
+          repository: https://github.com/fintech-bank-1/gosec-count
+          path: gosec-count
+
+      - name: Run Gosec Scan 1
+        id: gosec-step-1
+        uses: cloudbees-io/gosec-plugin@CBP-40852
+        with:
+            workspace-dir: gosec-count
+
+      - id: print-gosec-outputs-1
+        name: Print gosec outputs 1
+        uses: docker://alpine:latest
+        run: |
+          echo "Gosec outputs:"
+          echo "Critical: ${{ steps.gosec-step-1.outputs.critical-count }}"
+          echo "Very high: ${{ steps.gosec-step-1.outputs.very-high-count }}"
+          echo "High: ${{ steps.gosec-step-1.outputs.high-count }}"
+          echo "Medium: ${{ steps.gosec-step-1.outputs.medium-count }}"
+          echo "Low: ${{ steps.gosec-step-1.outputs.low-count }}"
+          echo "Policy Subject: ${{ steps.gosec-step-1.outputs.policy-subject }}"
+          echo "CLOUDBEES_OUTPUTS directory: $CLOUDBEES_OUTPUTS"
+      
+      - id: print-policy-subject-1
+        name: Print Policy subject 1
+        uses: docker://alpine:latest
+        run: |
+
+          echo "=== Files in $CLOUDBEES_OUTPUTS ==="                                                                                                                              
+          find "/cloudbees/workspace" -type f | while read file; do                                                                                                               
+            echo ""                                                                                                                                                               
+            echo "File: $file"                                                                                                                                                    
+            cat "$file"                                                                                                                                                           
+            echo "---"                                                                                                                                                            
+          done
+
+      - name: Run Snyk Sast
+        id: snyk-sast-step
+        uses: cloudbees-io/snyk-sast-plugin@CBP-40852
+        with:
+            workspace-dir: gosec-count
+
+      - id: print-snyk-sast-output
+        name: Print gosec outputs 1
+        uses: docker://alpine:latest
+        run: |
+          echo "Gosec outputs:"
+          echo "Critical: ${{ steps.snyk-sast-step.outputs.critical-count }}"
+          echo "Very high: ${{ steps.snyk-sast-step.outputs.very-high-count }}"
+          echo "High: ${{ steps.snyk-sast-step.outputs.high-count }}"
+          echo "Medium: ${{ steps.snyk-sast-step.outputs.medium-count }}"
+          echo "Low: ${{ steps.snyk-sast-step.outputs.low-count }}"
+          echo "Policy Subject: ${{ steps.snyk-sast-step.outputs.policy-subject }}"
+      
+      - id: print-policy-subject-2
+        name: Print Policy subject 2
+        uses: docker://alpine:latest
+        run: |
+
+          echo "=== Files in $CLOUDBEES_OUTPUTS ==="                                                                                                                              
+          find "/cloudbees/workspace" -type f | while read file; do                                                                                                               
+            echo ""                                                                                                                                                               
+            echo "File: $file"                                                                                                                                                    
+            cat "$file"                                                                                                                                                           
+            echo "---"                                                                                                                                                            
+          done
