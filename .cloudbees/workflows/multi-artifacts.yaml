@@ -16,12 +16,14 @@ jobs:
           repository: https://github.com/Dev-Org-Hari/webrtc-go
           path: "webrtc-repo"
 
+      # For testing purpose use CBP-40852 branch
       - name: Run Gosec Scan
         id: gosec-step
         uses: cloudbees-io/gosec-plugin@CBP-40852
         with:
             workspace-dir: "webrtc-repo"
 
+      # Printing output for testing purpose
       - id: print-gosec-outputs
         name: Print gosec outputs
         uses: docker://alpine:latest
@@ -46,6 +48,7 @@ jobs:
         with:
             workspace-dir: gosec-count
 
+      # Printing output for testing purpose
       - id: print-gosec-outputs-1
         name: Print gosec outputs 1
         uses: docker://alpine:latest
@@ -58,6 +61,7 @@ jobs:
           echo "Low: ${{ steps.gosec-step-1.outputs.low-count }}"
           echo "Policy Subject: ${{ steps.gosec-step-1.outputs.policy-subject }}"
       
+      # Printing policy subject details for testing purpose
       - id: print-policy-subject
         name: Print Policy subject
         uses: docker://alpine:latest
