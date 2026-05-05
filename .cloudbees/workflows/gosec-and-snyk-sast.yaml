@@ -1,6 +1,6 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
-name: gosec and snyk sast
+name: gosec and snyk sast and sca
 on:
   workflow_dispatch: {}
 permissions:
@@ -19,7 +19,7 @@ jobs:
       # For testing purpose use CBP-40852 branch
       - name: Run Gosec Scan
         id: gosec-step
-        uses: cloudbees-io/gosec-plugin@CBP-40852
+        uses: cloudbees-io/gosec-plugin@v1
         with:
             workspace-dir: "webrtc-repo"
 
@@ -41,10 +41,9 @@ jobs:
           repository: https://github.com/fintech-bank-1/gosec-count
           path: gosec-count
 
-      # For testing purpose use CBP-40852 branch
       - name: Run Gosec Scan 1
         id: gosec-step-1
-        uses: cloudbees-io/gosec-plugin@CBP-40852
+        uses: cloudbees-io/gosec-plugin@v1
         with:
             workspace-dir: gosec-count
 
@@ -61,10 +60,10 @@ jobs:
           echo "Low: ${{ steps.gosec-step-1.outputs.low-count }}"
           echo "Policy Subject: ${{ steps.gosec-step-1.outputs.policy-subject }}"
 
-      # For testing purpose use CBP-40852 branch
+
       - name: Run Snyk Sast
         id: snyk-sast-step
-        uses: cloudbees-io/snyk-sast-plugin@CBP-40852
+        uses: cloudbees-io/snyk-sast-plugin@v1
         with:
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           org-id: ${{ vars.SNYK_ORG_ID }}
@@ -82,6 +81,27 @@ jobs:
           echo "Medium: ${{ steps.snyk-sast-step.outputs.medium-count }}"
           echo "Low: ${{ steps.snyk-sast-step.outputs.low-count }}"
           echo "Policy Subject: ${{ steps.snyk-sast-step.outputs.policy-subject }}"
+
+      - name: Run Snyk SCA
+        id: snyk-sca-step
+        uses: cloudbees-io/snyk-sca-plugin@v1
+        with:
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+          org-id: ${{ vars.SNYK_ORG_ID }}
+          workspace-dir: gosec-count
+
+      # Printing output for testing purpose
+      - id: print-snyk-sca-output
+        name: Print Snyk sca outputs
+        uses: docker://alpine:latest
+        run: |
+          echo "Snyk SCA outputs:"
+          echo "Critical: ${{ steps.snyk-sca-step.outputs.critical-count }}"
+          echo "Very high: ${{ steps.snyk-sca-step.outputs.very-high-count }}"
+          echo "High: ${{ steps.snyk-sca-step.outputs.high-count }}"
+          echo "Medium: ${{ steps.snyk-sca-step.outputs.medium-count }}"
+          echo "Low: ${{ steps.snyk-sca-step.outputs.low-count }}"
+          echo "Policy Subject: ${{ steps.snyk-sca-step.outputs.policy-subject }}"
       
       # Printing policy subject details for testing purpose
       - id: print-policy-subject
