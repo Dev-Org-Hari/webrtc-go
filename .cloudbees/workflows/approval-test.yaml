@@ -45,8 +45,22 @@ jobs:
           CRITICAL=$(( ${{ steps.sonar-step.outputs.critical-count }} + ${{ steps.sonar-step.outputs.very-high-count }} ))
           HIGH=${{ steps.sonar-step.outputs.high-count }}
           MEDIUM=${{ steps.sonar-step.outputs.medium-count }}
+          TOTAL=$(( $CRITICAL + $HIGH + $MEDIUM ))
           cat > /cloudbees/workspace/policy-input.json << EOF
-          [{"vulnerability_scan":{"counts":{"CRITICAL":${CRITICAL},"HIGH":${HIGH},"MEDIUM":${MEDIUM}}}}]
+          [{
+            "type": "vulnerability_scan",
+            "data": {
+              "summary": {
+                "by_severity": {
+                  "total": ${TOTAL},
+                  "critical": ${CRITICAL},
+                  "high": ${HIGH},
+                  "medium": ${MEDIUM},
+                  "low": 0
+                }
+              }
+            }
+          }]
           EOF
 
       - name: Print policy input
