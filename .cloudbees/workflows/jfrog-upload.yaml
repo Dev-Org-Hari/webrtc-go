@@ -1,0 +1,36 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: jfrog upload
+on:
+  workflow_dispatch: {}
+permissions:
+  scm-token-own: read
+  scm-token-org: read
+  id-token: write
+jobs:
+  download-and-evaluate:
+    steps:
+      - name: checkout-source-code
+        uses: cloudbees-io/checkout@v2
+        with:
+          repository: https://github.com/cbp-trivy-explicit-scan/trivy-go-dockerImage-scan
+
+      - id: jfrog-actions-workflow-upload
+        name: jfrog actions workflow upload
+        uses: jfrog-artifactory-upload-file@v1
+        with:
+          url: ${{ vars.JFROG_URL }}
+          username: ${{ vars.JFROG_ACTIONS_USERNAME }}
+          password: ${{ secrets.JFROG_ACTIONS_PASSWORD }}
+          file-path: ./golang-alpine.tar
+          artifactory-path: policy/golang-alpine/golang-alpine.tar
+          artifact-name: golang-alpine
+          artifact-version: 1.0.0
+      
+      - id: print-upload-outputs
+        name: Print artifact upload outputs
+        uses: docker://alpine:latest
+        run: |
+          echo "Upload outputs:"
+          echo "Policy Subject: ${{ steps.jfrog-actions-workflow-upload.outputs.artifact-id }}"
+
