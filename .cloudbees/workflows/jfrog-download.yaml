@@ -27,8 +27,8 @@ jobs:
 
           echo "=== Files in /cloudbees/workspace/test-image ==="                                                                                                                              
           find "/cloudbees/workspace/test-image" -type f | while read file; do                                                                                                               
-            echo ""                                                                                                                                                               
+            echo ""                                                                                                                                                            
             echo "File: $file"                                                                                                                                                    
-            # cat "$file"                                                                                                                                                           
-            echo "---"                                                                                                                                                            
+            cat "$file"
+            echo "---"
           done
