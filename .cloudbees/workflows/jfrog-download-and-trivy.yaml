@@ -1,0 +1,50 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: jfrog download and trivy
+on:
+  workflow_dispatch: {}
+permissions:
+  scm-token-own: read
+  scm-token-org: read
+  id-token: write
+jobs:
+  download-and-evaluate:
+    steps:
+      - name: jfrog-actions-workflow-download
+        uses: cloudbees-io/jfrog-artifactory-download-file@v1
+        with:
+          url: ${{ vars.JFROG_URL }}
+          username: ${{ vars.JFROG_ACTIONS_USERNAME }}
+          password: ${{ secrets.JFROG_ACTIONS_PASSWORD }}
+          file-path: /cloudbees/workspace/golang-alpine.tar
+          artifactory-path: test-generic-repo/jfrogtest/golang-alpine.tar
+
+      # # Printing policy subject details for testing purpose
+      # - id: print-download-file
+      #   name: Print download file
+      #   uses: docker://alpine:latest
+      #   run: |
+
+      #     echo "=== Files in /cloudbees/workspace ==="                                                                                                                              
+      #     find "/cloudbees/workspace" -type f | while read file; do                                                                                                               
+      #       echo ""                                                                                                                                                            
+      #       echo "File: $file"                                                                                                                                                    
+      #       # cat "$file"
+      #       echo "---"
+      #     done
+      - id: trivy-scan
+        name: Scan with Trivy
+        uses: cloudbees-io/trivy-plugin@v2
+        with:
+          binary-tar-path: /cloudbees/workspace/golang-alpine.tar
+      
+      - id: print-trivy-outputs
+        name: Print trivy outputs
+        uses: docker://alpine:latest
+        run: |
+          echo "Trivy outputs:"
+          echo "Critical: ${{ steps.trivy-scan.outputs.critical-count }}"
+          echo "Very high: ${{ steps.trivy-scan.outputs.very-high-count }}"
+          echo "High: ${{ steps.trivy-scan.outputs.high-count }}"
+          echo "Medium: ${{ steps.trivy-scan.outputs.medium-count }}"
+          echo "Low: ${{ steps.trivy-scan.outputs.low-count }}"
