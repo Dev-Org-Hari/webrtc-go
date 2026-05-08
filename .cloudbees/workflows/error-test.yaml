@@ -50,13 +50,13 @@ jobs:
           policy: 935f59c8-4b21-4051-81b4-0d83d280d60d
           input-data: |
             [{
-            "type": "vulnerability_scan",
+            "type": "another_vulnerability_scan",
             "data": {
               "summary": {
                 "by_severity": {
-                  "total":"string",
-                  "critical": "string",
-                  "high": false,
+                  "total":0,
+                  "critical": 0,
+                  "high": 0,
                   "medium": 0,
                   "low": 0
                 }
