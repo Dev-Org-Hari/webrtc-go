@@ -24,7 +24,7 @@ jobs:
           apk add --no-cache jq
 
           # Create directory structure
-          mkdir -p "$CLOUDBEES_WORKSPACE/policy-store/$RUN_ID/policy-subject"
+          mkdir -p "$CLOUDBEES_WORKSPACE/policy-store/${{ cloudbees.run_id }}/policy-subject"
 
           # Get current timestamp
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -132,9 +132,9 @@ jobs:
           )
 
           # Write JSON to file
-          echo "$OUTPUT_JSON" | jq '.' > "$CLOUDBEES_WORKSPACE/policy-store/$RUN_ID/policy-subject/policy-subject.json"
+          echo "$OUTPUT_JSON" | jq '.' > "$CLOUDBEES_WORKSPACE/policy-store/${{ cloudbees.run_id }}/policy-subject/policy-subject.json"
 
-          echo "JSON file created successfully at: $CLOUDBEES_WORKSPACE/policy-store/$RUN_ID/policy-subject/policy-subject.json"
+          echo "JSON file created successfully at: $CLOUDBEES_WORKSPACE/policy-store/${{ cloudbees.run_id }}/policy-subject/policy-subject.json"
           echo "Total vulnerabilities found: $TOTAL_COUNT"
 
       # Printing policy subject details for testing purpose
