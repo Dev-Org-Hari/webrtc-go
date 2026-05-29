@@ -55,3 +55,5 @@ jobs:
         uses: cloudbees-io/policy-check/actions/evaluate-policy-context@CBP-46190
         with:
           input-data: ${{ steps.make-input.outputs.policy-subject }}
+          checkpoint-type: workflow
+          checkpoint-position: within
