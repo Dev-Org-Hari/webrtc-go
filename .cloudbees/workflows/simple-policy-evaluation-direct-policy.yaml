@@ -37,5 +37,3 @@ jobs:
     with:
       policy-id: "7232af51-4c0d-423c-959d-8d778b1df1d1"
       input-data: ${{ needs.scan-and-evaluate.outputs.policy-subject }}
-      checkpoint-type: workflow
-      checkpoint-position: within
