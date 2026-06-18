@@ -60,4 +60,4 @@ jobs:
       # No input data
       input-data: "[]"
       checkpoint-type: workflow
-      checkpoint-position: within
+      checkpoint-position: exit
