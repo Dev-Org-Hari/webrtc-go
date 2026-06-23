@@ -1,0 +1,70 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: gosec and trivy scan
+on:
+  workflow_dispatch: {}
+permissions:
+  scm-token-own: read
+  scm-token-org: read
+  id-token: write
+jobs:
+  scan-and-evaluate:
+    steps:
+      - name: checkout-source-code
+        uses: cloudbees-io/checkout@v2
+        with:
+          repository: https://github.com/Dev-Org-Hari/webrtc-go
+          path: "webrtc-repo"
+
+      # For testing purpose use CBP-40852 branch
+      - name: Run Gosec Scan
+        id: gosec-step
+        uses: cloudbees-io/gosec-plugin@CBP-47543
+        with:
+            workspace-dir: "webrtc-repo"
+
+      - id: print-gosec-outputs
+        name: Print gosec outputs
+        uses: docker://alpine:latest
+        run: |
+          echo "Gosec outputs:"
+          echo "Critical: ${{ steps.gosec-step.outputs.critical-count }}"
+          echo "Very high: ${{ steps.gosec-step.outputs.very-high-count }}"
+          echo "High: ${{ steps.gosec-step.outputs.high-count }}"
+          echo "Medium: ${{ steps.gosec-step.outputs.medium-count }}"
+          echo "Low: ${{ steps.gosec-step.outputs.low-count }}"
+          echo "Policy Subject: ${{ steps.gosec-step.outputs.policy-subject }}"
+      
+      - name: jfrog-actions-workflow-download
+        uses: cloudbees-io/jfrog-artifactory-download-file@v1
+        with:
+          url: ${{ vars.JFROG_URL }}
+          username: ${{ vars.JFROG_ACTIONS_USERNAME }}
+          password: ${{ secrets.JFROG_ACTIONS_PASSWORD }}
+          file-path: /cloudbees/workspace/golang-alpine.tar
+          artifactory-path: test-generic-repo/jfrogtest/golang-alpine.tar
+
+      - id: trivy-scan
+        name: Scan with Trivy
+        uses: cloudbees-io/trivy-plugin@v1
+        with:
+          binary-tar-path: /cloudbees/workspace/golang-alpine.tar
+
+      - id: print-trivy-outputs
+        name: Print trivy outputs
+        uses: docker://alpine:latest
+        run: |
+          echo "Trivy outputs:"
+          echo "Critical: ${{ steps.trivy-scan.outputs.critical-count }}"
+          echo "Very high: ${{ steps.trivy-scan.outputs.very-high-count }}"
+          echo "High: ${{ steps.trivy-scan.outputs.high-count }}"
+          echo "Medium: ${{ steps.trivy-scan.outputs.medium-count }}"
+          echo "Low: ${{ steps.trivy-scan.outputs.low-count }}"
+          echo "Policy Subject: ${{ steps.trivy-scan.outputs.policy-subject }}"
+
+      - name: Run policy check
+        id: policy-check
+        uses: cloudbees-io/policy-check@v1
+        with:
+         policy: f5c42488-9bf3-4f48-a04a-a213983f7a35
+         input-data: ${{ steps.trivy-scan.outputs.policy-subject }}
