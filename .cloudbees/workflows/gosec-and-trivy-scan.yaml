@@ -19,7 +19,7 @@ jobs:
       # For testing purpose use CBP-40852 branch
       - name: Run Gosec Scan
         id: gosec-step
-        uses: cloudbees-io/gosec-plugin@CBP-47543
+        uses: cloudbees-io/gosec-plugin@v1
         with:
             workspace-dir: "webrtc-repo"
 
