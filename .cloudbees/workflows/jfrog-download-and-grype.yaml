@@ -21,7 +21,7 @@ jobs:
 
       - id: grype-scan
         name: Scan with Grype
-        uses: cloudbees-io/grype-plugin@CBP-48900
+        uses: cloudbees-io/grype-plugin@v1
         with:
           binary-tar-path: /cloudbees/workspace/golang-alpine.tar
 
