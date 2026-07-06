@@ -12,17 +12,21 @@
           uses: docker://alpine:latest
           shell: sh
           env:
-            ORG_ID: ${{ cloudbees.org.id }}
-            API_URL: ${{ cloudbees.api.url }}
+            API_URL:      ${{ cloudbees.api.url }}
             ACCESS_TOKEN: ${{ cloudbees.api.token }}
-            SCM_BRANCH: ${{ cloudbees.scm.branch }}
-            SCM_REPO_URL: ${{ cloudbees.scm.repositoryUrl }}
-            SCM_SHA: ${{ cloudbees.scm.sha }}
+            COMPONENT_ID: ${{ cloudbees.component.id }}
+            ORG_ID:       ${{ cloudbees.org.id }}
+            RUN_ID:       ${{ cloudbees.run_id }}
+            SCM_BRANCH:   ${{ cloudbees.scm.branch }}
+            SCM_REPO:     ${{ cloudbees.scm.repository }}
+            SCM_SHA:      ${{ cloudbees.scm.sha }}
           run: |
             echo "=== CloudBees Context ==="
-            echo "org.id:          $ORG_ID"
-            echo "api.url:         $API_URL"
-            echo "api.token:       ${ACCESS_TOKEN:0:10}... (truncated)"
-            echo "scm.branch:      $SCM_BRANCH"
-            echo "scm.repositoryUrl: $SCM_REPO_URL"
-            echo "scm.sha:         $SCM_SHA"
+            echo "api.url:          $API_URL"
+            echo "api.token:        ${ACCESS_TOKEN:0:10}... (truncated)"
+            echo "component.id:     $COMPONENT_ID"
+            echo "org.id:           $ORG_ID"
+            echo "run_id:           $RUN_ID"
+            echo "scm.branch:       $SCM_BRANCH"
+            echo "scm.repository:   $SCM_REPO"
+            echo "scm.sha:          $SCM_SHA"
