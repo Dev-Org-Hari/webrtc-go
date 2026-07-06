@@ -34,7 +34,7 @@
       steps:
       - name: Run Gosec Scan 1
         id: gosec-step-1
-        uses: cloudbees-io/gosec-plugin@CBP-47543
+        uses: cloudbees-io/gosec-plugin@v1
 
       # Printing output for testing purpose
       - id: print-gosec-outputs-1
