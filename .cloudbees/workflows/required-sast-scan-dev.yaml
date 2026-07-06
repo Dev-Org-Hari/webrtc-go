@@ -20,7 +20,6 @@
             COMPONENT_ID: ${{ cloudbees.component.id }}
             SCM_URL: ${{ cloudbees.scm.url }}
             SCM_TOKEN: ${{ cloudbees.scm.token }}
-            EVENT_NAME: ${{ cloudbees.event.name }}
           run: |
             echo "=== CloudBees Context ==="
             echo "org.id:              $ORG_ID"
@@ -31,4 +30,3 @@
             echo "component.id:        $COMPONENT_ID"
             echo "scm.url:             $SCM_URL"
             echo "scm.token:           ${SCM_TOKEN:0:10}... (truncated)"
-            echo "event.name:          $EVENT_NAME"
