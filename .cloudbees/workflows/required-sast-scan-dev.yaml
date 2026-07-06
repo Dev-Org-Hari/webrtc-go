@@ -33,7 +33,7 @@
     scan-and-evaluate:
       steps:
         - name: checkout-source-code
-          uses: cloudbees-io/checkout@v1
+          uses: cloudbees-io/checkout@v2
 
         - name: Run Gosec Scan
           id: gosec-step
