@@ -35,8 +35,6 @@
       - name: Run Gosec Scan 1
         id: gosec-step-1
         uses: cloudbees-io/gosec-plugin@CBP-47543
-        with:
-            workspace-dir: gosec-count
 
       # Printing output for testing purpose
       - id: print-gosec-outputs-1
