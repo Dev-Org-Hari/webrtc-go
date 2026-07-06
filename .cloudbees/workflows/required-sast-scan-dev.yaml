@@ -30,3 +30,23 @@
             echo "scm.branch:       $SCM_BRANCH"
             echo "scm.repository:   $SCM_REPO"
             echo "scm.sha:          $SCM_SHA"
+    scan-and-evaluate:
+      steps:
+      - name: Run Gosec Scan 1
+        id: gosec-step-1
+        uses: cloudbees-io/gosec-plugin@CBP-47543
+        with:
+            workspace-dir: gosec-count
+
+      # Printing output for testing purpose
+      - id: print-gosec-outputs-1
+        name: Print gosec outputs 1
+        uses: docker://alpine:latest
+        run: |
+          echo "Gosec outputs:"
+          echo "Critical: ${{ steps.gosec-step-1.outputs.critical-count }}"
+          echo "Very high: ${{ steps.gosec-step-1.outputs.very-high-count }}"
+          echo "High: ${{ steps.gosec-step-1.outputs.high-count }}"
+          echo "Medium: ${{ steps.gosec-step-1.outputs.medium-count }}"
+          echo "Low: ${{ steps.gosec-step-1.outputs.low-count }}"
+          echo "Policy Subject: ${{ steps.gosec-step-1.outputs.policy-subject }}"        
