@@ -19,7 +19,7 @@ jobs:
       # For testing purpose use CBP-40852 branch
       - name: Run Gosec Scan
         id: gosec-step
-        uses: cloudbees-io/gosec-plugin@CBP-47543
+        uses: cloudbees-io/gosec-plugin@v1
         with:
             workspace-dir: "webrtc-repo"
 
@@ -43,7 +43,7 @@ jobs:
 
       - name: Run Gosec Scan 1
         id: gosec-step-1
-        uses: cloudbees-io/gosec-plugin@CBP-47543
+        uses: cloudbees-io/gosec-plugin@v1
         with:
             workspace-dir: gosec-count
 
@@ -63,7 +63,7 @@ jobs:
 
       - name: Run Snyk Sast
         id: snyk-sast-step
-        uses: cloudbees-io/snyk-sast-plugin@CBP-47543
+        uses: cloudbees-io/snyk-sast-plugin@v1
         with:
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           org-id: ${{ vars.SNYK_ORG_ID }}
