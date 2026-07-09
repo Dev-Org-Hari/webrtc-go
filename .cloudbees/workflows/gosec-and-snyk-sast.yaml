@@ -63,7 +63,7 @@ jobs:
 
       - name: Run Snyk Sast
         id: snyk-sast-step
-        uses: cloudbees-io/snyk-sast-plugin@v1
+        uses: cloudbees-io/snyk-sast-plugin@CBP-52533-1
         with:
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           org-id: ${{ vars.SNYK_ORG_ID }}
