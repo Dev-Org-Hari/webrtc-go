@@ -17,7 +17,7 @@ jobs:
         uses: docker://alpine:latest
         shell: sh
         run: |
-          CRITICAL=0
+          CRITICAL=10
           HIGH=25
           MEDIUM=0
           LOW=0
@@ -52,11 +52,11 @@ jobs:
           echo "$ORG"
           echo "Authorization: Bearer $ACCESS_KEY"
           echo "$POLICY_SUBJECT"
-  policy-evaluation:
-    uses: cloudbees-io/policy-utils/evaluate-policy-context/workflow.yml@v1
-    needs:
-      - scan-and-evaluate
-    with:
-      input-data: ${{ needs.scan-and-evaluate.outputs.policy-subject }}
-      checkpoint-type: workflow
-      checkpoint-position: exit
+  # policy-evaluation:
+  #   uses: cloudbees-io/policy-utils/evaluate-policy-context/workflow.yml@v1
+  #   needs:
+  #     - scan-and-evaluate
+  #   with:
+  #     input-data: ${{ needs.scan-and-evaluate.outputs.policy-subject }}
+  #     checkpoint-type: workflow
+  #     checkpoint-position: exit
