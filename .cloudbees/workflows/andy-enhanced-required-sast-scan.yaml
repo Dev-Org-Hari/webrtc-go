@@ -49,4 +49,11 @@
             echo "High: ${{ steps.gosec-step.outputs.high-count }}"
             echo "Medium: ${{ steps.gosec-step.outputs.medium-count }}"
             echo "Low: ${{ steps.gosec-step.outputs.low-count }}"
-            echo "Policy Subject: ${{ steps.gosec-step.outputs.policy-subject }}"       
+            echo "Policy Subject: ${{ steps.gosec-step.outputs.policy-subject }}"
+    build: 
+      steps:
+        - name: Build something
+          uses: docker://alpine:latest
+          shell: sh
+          run: echo "Building..."
+
