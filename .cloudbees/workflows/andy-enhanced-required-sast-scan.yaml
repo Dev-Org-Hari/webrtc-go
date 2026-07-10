@@ -31,6 +31,8 @@
             echo "scm.repository:   $SCM_REPO"
             echo "scm.sha:          $SCM_SHA"
     scan-and-evaluate:
+      outputs:
+         policy-subject: ${{ steps.gosec-step.outputs.policy-subject }}
       steps:
         - name: checkout-source-code
           uses: cloudbees-io/checkout@v2
