@@ -1,4 +1,4 @@
-  name: andy-enhanced-required-sast-scan-fail
+  name: andy-enhanced-required-sast-scan-noscan
   apiVersion: automation.cloudbees.io/v1alpha1
   kind: workflow
   on:
@@ -32,7 +32,7 @@
             echo "scm.sha:          $SCM_SHA"
     scan-and-evaluate:
       outputs:
-         policy-subject: ""
+         policy-subject: "[]"
       steps:
         - name: No scan here
           uses: docker://alpine:latest
