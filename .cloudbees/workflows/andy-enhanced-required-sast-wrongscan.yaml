@@ -63,7 +63,7 @@
       with:
         input-data: ${{ needs.scan-and-evaluate.outputs.policy-subject }}
         checkpoint-type: workflow
-        checkpoint-position: within            
+        checkpoint-position: exit            
     build: 
       needs: policy-evaluation
       steps:
