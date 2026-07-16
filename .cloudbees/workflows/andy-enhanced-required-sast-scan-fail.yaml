@@ -39,7 +39,7 @@ jobs:
         shell: sh
         run: echo "No scan here.."
   policy-evaluation-within:
-    uses: cloudbees-io/policy-utils/evaluate-policy-context/workflow.yml@v1
+    uses: cloudbees-io/policy-utils/evaluate-policy-context/workflow.yml@v2
     needs:
       - scan-and-evaluate
     with:
@@ -47,7 +47,7 @@ jobs:
       checkpoint-type: workflow
       checkpoint-position: within
   policy-evaluation-exit:
-    uses: cloudbees-io/policy-utils/evaluate-policy-context/workflow.yml@v1
+    uses: cloudbees-io/policy-utils/evaluate-policy-context/workflow.yml@v2
     needs:
       - policy-evaluation-within
       - scan-and-evaluate
