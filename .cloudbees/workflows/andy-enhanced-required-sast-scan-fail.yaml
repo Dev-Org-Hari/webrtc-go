@@ -50,6 +50,7 @@ jobs:
     uses: cloudbees-io/policy-utils/evaluate-policy-context/workflow.yml@v1
     needs:
       - policy-evaluation-within
+      - scan-and-evaluate
     with:
       input-data: ${{ needs.scan-and-evaluate.outputs.policy-subject }}
       checkpoint-type: workflow
