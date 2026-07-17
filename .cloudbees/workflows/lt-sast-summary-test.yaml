@@ -10,8 +10,7 @@ permissions:
 jobs:
   scan-and-evaluate:
     outputs:
-      # policy-subject: ${{ steps.make-input.outputs.policy-subject }}
-      test: ${{ steps.make-input.outputs.test }}
+      policy-subject: ${{ steps.make-input.outputs.policy-subject }}
     steps:
       - id: make-input
         name: Build a test policy subject
@@ -23,7 +22,7 @@ jobs:
           MEDIUM=0
           LOW=0
           TOTAL=$(( $CRITICAL + $HIGH + $MEDIUM + $LOW ))
-          cat > "$CLOUDBEES_OUTPUTS/test" << EOF
+          cat > "$CLOUDBEES_OUTPUTS/policy-subject" << EOF
           [{
             "type": "vulnerability_scan",
             "data": {
@@ -80,7 +79,7 @@ jobs:
           ORG: ${{ cloudbees.org.id }}
           ACCESS_KEY: ${{ cloudbees.api.token }}
           URL: ${{ cloudbees.api.url }}
-          POLICY_SUBJECT: ${{ steps.make-input.outputs.test }}
+          POLICY_SUBJECT: ${{ steps.make-input.outputs.policy-subject }}
         run: |
           echo "$URL"
           echo "$ORG"
