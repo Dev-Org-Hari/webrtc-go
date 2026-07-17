@@ -82,7 +82,7 @@ jobs:
           ORG: ${{ cloudbees.org.id }}
           ACCESS_KEY: ${{ cloudbees.api.token }}
           URL: ${{ cloudbees.api.url }}
-          POLICY_SUBJECT: ${{ jobs.scan-and-evaluate.outputs.policy-subject }}
+          POLICY_SUBJECT: ${{ needs.scan-and-evaluate.outputs.policy-subject }}
         run: |
           echo "$URL"
           echo "$ORG"
