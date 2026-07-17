@@ -60,7 +60,7 @@ jobs:
                 "tool": "Security Scanner 1",
                 "tool_version": "1.0",
                 "tool_type": "sast_scan",
-                "status": "COMPLETE",
+                "status": "FAILED",
                 "scanned_at": "2026-07-16T15:30:43Z",
                 "target": {
                   "type": "repository",
