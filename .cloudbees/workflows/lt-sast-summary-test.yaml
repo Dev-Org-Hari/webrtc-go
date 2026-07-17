@@ -22,7 +22,8 @@ jobs:
           MEDIUM=0
           LOW=0
           TOTAL=$(( $CRITICAL + $HIGH + $MEDIUM + $LOW ))
-          cat > "$CLOUDBEES_OUTPUTS/policy-subject" << EOF
+          # cat > "$CLOUDBEES_OUTPUTS/policy-subject" << EOF
+          echo << EOF
           [{
             "type": "vulnerability_scan",
             "data": {
