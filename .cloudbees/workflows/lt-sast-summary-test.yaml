@@ -1,0 +1,95 @@
+name: lt-sast-summary-test
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+on:
+  workflow_dispatch:
+permissions:
+  scm-token-own: read
+  scm-token-org: read
+  id-token: write
+jobs:
+  scan-and-evaluate:
+    outputs:
+      policy-subject: ${{ steps.make-input.outputs.policy-subject }}
+    steps:
+      - id: make-input
+        name: Build a test policy subject
+        uses: docker://alpine:latest
+        shell: sh
+        run: |
+          CRITICAL=10
+          HIGH=25
+          MEDIUM=0
+          LOW=0
+          TOTAL=$(( $CRITICAL + $HIGH + $MEDIUM + $LOW ))
+          cat > "$CLOUDBEES_OUTPUTS/policy-subject" << EOF
+          [{
+            "type": "vulnerability_scan",
+            "data": {
+              "summary": {
+                "by_severity": {
+                  "total": ${TOTAL},
+                  "critical": ${CRITICAL},
+                  "high": ${HIGH},
+                  "medium": ${MEDIUM},
+                  "low": ${LOW}
+                }
+              }
+            },
+            "meta": [
+              {
+                "tool": "Security Scanner 1",
+                "tool_version": "1.0",
+                "tool_type": "sast_scan"
+                "status": "COMPLETE",
+                "scanned_at": "2026-07-16T15:30:43Z",
+                "target": {
+                  "type": "repository",
+                  "commit_sha": "b7a4d2d7afb708bdac263686cd291608e00b6bae",
+                  "repo": "https://github.com/Dev-Org-Hari/webrtc-go"
+                }
+              }
+            ]
+          }, {
+            "type": "sast_scan",
+            "data": {
+              "completed": true
+            },
+            "meta": [
+              {
+                "tool": "Security Scanner 1",
+                "tool_version": "1.0",
+                "tool_type": "sast_scan"
+                "status": "COMPLETE",
+                "scanned_at": "2026-07-16T15:30:43Z",
+                "target": {
+                  "type": "repository",
+                  "commit_sha": "b7a4d2d7afb708bdac263686cd291608e00b6bae",
+                  "repo": "https://github.com/Dev-Org-Hari/webrtc-go"
+                }
+              }
+            ]
+          }]
+          EOF
+
+      - name: Print policy input
+        uses: docker://alpine:latest
+        shell: sh
+        env:
+          ORG: ${{ cloudbees.org.id }}
+          ACCESS_KEY: ${{ cloudbees.api.token }}
+          URL: ${{ cloudbees.api.url }}
+          POLICY_SUBJECT: ${{ steps.make-input.outputs.policy-subject }}
+        run: |
+          echo "$URL"
+          echo "$ORG"
+          echo "Authorization: Bearer $ACCESS_KEY"
+          echo "$POLICY_SUBJECT"
+  # policy-evaluation:
+  #   uses: cloudbees-io/policy-utils/evaluate-policy-context/workflow.yml@v1
+  #   needs:
+  #     - scan-and-evaluate
+  #   with:
+  #     input-data: ${{ needs.scan-and-evaluate.outputs.policy-subject }}
+  #     checkpoint-type: workflow
+  #     checkpoint-position: exit
