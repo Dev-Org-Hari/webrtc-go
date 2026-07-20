@@ -15,6 +15,8 @@ jobs:
       - id: make-input
         name: Build a test policy subject
         uses: docker://alpine:latest
+        env:
+          COMMIT: ${cloudbees.scm.sha}
         shell: sh
         run: |
           CRITICAL=10
@@ -45,7 +47,7 @@ jobs:
                 "scanned_at": "2026-07-16T15:30:43Z",
                 "target": {
                   "type": "repository",
-                  "commit_sha": "b7a4d2d7afb708bdac263686cd291608e00b6bae",
+                  "commit_sha": "${COMMIT}",
                   "repo": "https://github.com/Dev-Org-Hari/webrtc-go"
                 }
               }
@@ -64,7 +66,7 @@ jobs:
                 "scanned_at": "2026-07-16T15:30:43Z",
                 "target": {
                   "type": "repository",
-                  "commit_sha": "b7a4d2d7afb708bdac263686cd291608e00b6bae",
+                  "commit_sha": "${COMMIT}",
                   "repo": "https://github.com/Dev-Org-Hari/webrtc-go"
                 }
               }
