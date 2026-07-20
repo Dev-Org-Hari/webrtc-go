@@ -16,9 +16,9 @@ jobs:
         name: Build a test policy subject
         uses: docker://alpine:latest
         env:
-          #REPO: ${{ cloudbees.scm.repositoryUrl }}
-          REPO: "calculi-corp/none"
-          COMMIT: ${{ cloudbees.scm.sha }}
+          REPO: ${{ cloudbees.scm.repositoryUrl }}
+          #COMMIT: ${{ cloudbees.scm.sha }}
+          COMMIT: "abcdef"
         shell: sh
         run: |
           CRITICAL=10
