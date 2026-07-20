@@ -48,9 +48,9 @@ jobs:
                 "status": "COMPLETE",
                 "scanned_at": "2026-07-16T15:30:43Z",
                 "target": {
-                  "type": "${REPO}",
+                  "type": "repository",
                   "commit_sha": "${COMMIT}",
-                  "repo": "https://github.com/Dev-Org-Hari/webrtc-go"
+                  "repo": "${REPO}"
                 }
               }
             ]
@@ -67,9 +67,9 @@ jobs:
                 "status": "COMPLETE",
                 "scanned_at": "2026-07-16T15:30:43Z",
                 "target": {
-                  "type": "${REPO}",
+                  "type": "repository",
                   "commit_sha": "${COMMIT}",
-                  "repo": "https://github.com/Dev-Org-Hari/webrtc-go"
+                  "repo": "${REPO}"
                 }
               }
             ]
