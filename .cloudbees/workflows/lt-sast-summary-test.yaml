@@ -52,25 +52,6 @@ jobs:
                 }
               }
             ]
-          }, {
-            "type": "sast_scan",
-            "data": {
-              "completed": true
-            },
-            "meta": [
-              {
-                "tool": "Security Scanner 1",
-                "tool_version": "1.0",
-                "tool_type": "sast_scan",
-                "status": "FAILED",
-                "scanned_at": "2026-07-16T15:30:43Z",
-                "target": {
-                  "type": "repository",
-                  "commit_sha": "${COMMIT}",
-                  "repo": "https://github.com/Dev-Org-Hari/webrtc-go"
-                }
-              }
-            ]
           }]
           EOF
   do-something:
