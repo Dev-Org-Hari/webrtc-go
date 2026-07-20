@@ -17,8 +17,7 @@ jobs:
         uses: docker://alpine:latest
         env:
           REPO: ${{ cloudbees.scm.repositoryUrl }}
-          #COMMIT: ${{ cloudbees.scm.sha }}
-          COMMIT: "abcdef"
+          COMMIT: ${{ cloudbees.scm.sha }}
         shell: sh
         run: |
           CRITICAL=10
