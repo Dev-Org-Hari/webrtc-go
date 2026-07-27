@@ -61,7 +61,7 @@
     #     checkpoint-type: workflow
     #     checkpoint-position: within            
     build: 
-      needs: policy-evaluation
+      needs: scan-and-evaluate
       steps:
         - name: Build something
           uses: docker://alpine:latest
