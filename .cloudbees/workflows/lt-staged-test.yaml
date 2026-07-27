@@ -15,61 +15,61 @@ metadata:
 jobs:
   job1:
     steps:
-      - run: |2-
-                    CRITICAL=0
-                    HIGH=0
-                    MEDIUM=0
-                    LOW=0
-                    TOTAL=$(( $CRITICAL + $HIGH + $MEDIUM + $LOW ))
-                    cat > "$CLOUDBEES_OUTPUTS/policy-subject" << EOF
-                    [{
-                      "type": "vulnerability_scan",
-                      "data": {
-                        "summary": {
-                          "by_severity": {
-                            "total": ${TOTAL},
-                            "critical": ${CRITICAL},
-                            "high": ${HIGH},
-                            "medium": ${MEDIUM},
-                            "low": ${LOW}
-                          }
-                        }
-                      },
-                      "meta": [
-                        {
-                          "tool": "Security Scanner 1",
-                          "tool_version": "1.0",
-                          "tool_type": "sast_scan",
-                          "status": "COMPLETE",
-                          "scanned_at": "2026-07-16T15:30:43Z",
-                          "target": {
-                            "type": "repository",
-                            "commit_sha": "${COMMIT}",
-                            "repo": "${REPO}"
-                          }
-                        }
-                      ]
-                    }, {
-                      "type": "sast_scan",
-                      "data": {
-                        "completed": true
-                      },
-                      "meta": [
-                        {
-                          "tool": "Security Scanner 1",
-                          "tool_version": "1.0",
-                          "tool_type": "sast_scan",
-                          "status": "COMPLETE",
-                          "scanned_at": "2026-07-16T15:30:43Z",
-                          "target": {
-                            "type": "repository",
-                            "commit_sha": "${COMMIT}",
-                            "repo": "${REPO}"
-                          }
-                        }
-                      ]
-                    }]
-                    EOF
+      - run: |-
+          CRITICAL=0
+          HIGH=0
+          MEDIUM=0
+          LOW=0
+          TOTAL=$(( $CRITICAL + $HIGH + $MEDIUM + $LOW ))
+          cat > "$CLOUDBEES_OUTPUTS/policy-subject" << EOF
+          [{
+            "type": "vulnerability_scan",
+            "data": {
+              "summary": {
+                "by_severity": {
+                  "total": ${TOTAL},
+                  "critical": ${CRITICAL},
+                  "high": ${HIGH},
+                  "medium": ${MEDIUM},
+                  "low": ${LOW}
+                }
+              }
+            },
+            "meta": [
+              {
+                "tool": "Security Scanner 1",
+                "tool_version": "1.0",
+                "tool_type": "sast_scan",
+                "status": "COMPLETE",
+                "scanned_at": "2026-07-16T15:30:43Z",
+                "target": {
+                  "type": "repository",
+                  "commit_sha": "${COMMIT}",
+                  "repo": "${REPO}"
+                }
+              }
+            ]
+          }, {
+            "type": "sast_scan",
+            "data": {
+              "completed": true
+            },
+            "meta": [
+              {
+                "tool": "Security Scanner 1",
+                "tool_version": "1.0",
+                "tool_type": "sast_scan",
+                "status": "COMPLETE",
+                "scanned_at": "2026-07-16T15:30:43Z",
+                "target": {
+                  "type": "repository",
+                  "commit_sha": "${COMMIT}",
+                  "repo": "${REPO}"
+                }
+              }
+            ]
+          }]
+          EOF
         uses: docker://golang:1.20.3-alpine3.17
         name: Hello world
         shell: sh
