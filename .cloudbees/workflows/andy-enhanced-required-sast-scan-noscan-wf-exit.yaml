@@ -39,7 +39,7 @@ jobs:
         shell: sh
         run: echo "No scan here.."   
   build:
-    needs: policy-evaluation-exit
+    needs: scan-and-evaluate
     steps:
       - name: Build something
         uses: docker://alpine:latest
