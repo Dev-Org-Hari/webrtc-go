@@ -39,7 +39,7 @@
 
         - name: Run Gosec Scan
           id: gosec-step
-          uses: cloudbees-io/gosec-plugin@v1
+          uses: cloudbees-io/gosec-plugin@cbp-52712-bump-assets-plugin-chain-utils
 
         - id: print-gosec-outputs
           name: Print gosec outputs
