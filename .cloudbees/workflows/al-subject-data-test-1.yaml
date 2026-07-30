@@ -46,7 +46,7 @@ jobs:
 
   # Boundary exit: sends NO subject data — must use accumulated data from scan-job
   policy-exit:
-    needs: [policy-within]
+    needs: [scan-job]
     uses: cloudbees-io/policy-utils/evaluate-policy-context/workflow.yml@v2
     with:
       checkpoint-type: job
