@@ -1,0 +1,25 @@
+name: al-subject-data-test-2
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+on:
+  workflow_dispatch:
+permissions:
+  scm-token-own: read
+  scm-token-org: read
+  id-token: write
+jobs:
+  no-scan-job:
+    steps:
+      - name: Do nothing (no subject data produced)
+        uses: docker://alpine:latest
+        shell: sh
+        run: echo "no scan here"
+
+  # Boundary exit with nothing stored — strict mode must fire WARN
+  policy-exit:
+    needs: [no-scan-job]
+    uses: cloudbees-io/policy-utils/evaluate-policy-context/workflow.yml@v2
+    with:
+      checkpoint-type: job
+      checkpoint-name: no-scan-job
+      checkpoint-position: exit
