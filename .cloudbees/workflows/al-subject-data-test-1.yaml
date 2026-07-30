@@ -35,14 +35,14 @@ jobs:
           EOF
 
   # Inline within: stores subject data for this run
-  policy-within:
-    needs: [scan-job]
-    uses: cloudbees-io/policy-utils/evaluate-policy-context/workflow.yml@v2
-    with:
-      input-data: ${{ needs.scan-job.outputs.policy-subject }}
-      checkpoint-type: job
-      checkpoint-name: scan-job
-      checkpoint-position: within
+  # policy-within:
+  #   needs: [scan-job]
+  #   uses: cloudbees-io/policy-utils/evaluate-policy-context/workflow.yml@v2
+  #   with:
+  #     input-data: ${{ needs.scan-job.outputs.policy-subject }}
+  #     checkpoint-type: job
+  #     checkpoint-name: scan-job
+  #     checkpoint-position: within
 
   # Boundary exit: sends NO subject data — must use accumulated data from scan-job
   policy-exit:
