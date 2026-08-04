@@ -4,10 +4,6 @@ name: my-workflow-2
 
 on:
   workflow_dispatch:
-
-on:
-  workflow_dispatch:
-
 jobs:
   scan-and-evaluate:
     outputs:
