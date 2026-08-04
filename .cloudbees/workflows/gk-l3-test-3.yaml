@@ -1,0 +1,55 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: gk-l3-test-3
+on:
+  workflow_dispatch:
+permissions:
+  scm-token-own: read
+  scm-token-org: read
+  id-token: write
+metadata:
+  stages/v1alpha1:
+    - name: SAST Scan
+      jobs:
+        - scan-and-evaluate
+    - name: Policy Gate
+      jobs:
+        - do-something
+jobs:
+  scan-and-evaluate:
+    outputs:
+      policy-subject: ${{ steps.gosec.outputs.policy-subject }}
+    steps:
+      - name: Checkout source code
+        uses: cloudbees-io/checkout@v1
+      - name: Run Gosec
+        id: gosec
+        uses: cloudbees-io/gosec-plugin@v1
+      - name: Print Gosec outputs
+        uses: docker://alpine:latest
+        run: |
+          echo "=== Gosec Scan Results ==="
+          echo "Critical:       ${{ steps.gosec.outputs.critical-count }}"
+          echo "Very High:      ${{ steps.gosec.outputs.very-high-count }}"
+          echo "High:           ${{ steps.gosec.outputs.high-count }}"
+          echo "Medium:         ${{ steps.gosec.outputs.medium-count }}"
+          echo "Low:            ${{ steps.gosec.outputs.low-count }}"
+          echo "Policy subject: ${{ steps.gosec.outputs.policy-subject }}"
+  do-something:
+    needs:
+      - scan-and-evaluate
+    steps:
+      - name: Evaluate policy
+        id: policy
+        uses: cloudbees-io/policy-check@v1
+        with:
+          input-data: ${{ needs.scan-and-evaluate.outputs.policy-subject }}
+      - name: Print policy gate outputs
+        uses: docker://alpine:latest
+        run: |
+          echo "=== Policy Gate Result ==="
+          echo "Action:                ${{ steps.policy.outputs.action }}"
+          echo "Details:               ${{ steps.policy.outputs.details }}"
+          echo "Review channel:        ${{ steps.policy.outputs.review-channel }}"
+          echo "Review recipients:     ${{ steps.policy.outputs.review-recipients }}"
+          echo "Review timeout (min):  ${{ steps.policy.outputs.review-timeout-minutes }}"
