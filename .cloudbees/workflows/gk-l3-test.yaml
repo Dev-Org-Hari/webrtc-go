@@ -1,79 +1,43 @@
-name: gk-l3-test
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
+name: gk-l3-test
 on:
   workflow_dispatch:
 permissions:
   scm-token-own: read
   scm-token-org: read
   id-token: write
+metadata:
+  stages/v1alpha1:
+    - name: SAST Scan
+      jobs:
+        - scan-and-evaluate
+    - name: Policy Gate
+      jobs:
+        - do-something
 jobs:
   scan-and-evaluate:
     outputs:
-      policy-subject: ${{ steps.make-input.outputs.policy-subject }}
+      policy-subject: ${{ steps.gosec.outputs.policy-subject }}
     steps:
-      - id: make-input
-        name: Build a test policy subject
+      - name: Checkout source code
+        uses: cloudbees-io/checkout@v1
+
+      - name: Run Gosec
+        id: gosec
+        uses: cloudbees-io/gosec-plugin@v1
+
+      - name: Print Gosec outputs
         uses: docker://alpine:latest
-        env:
-          REPO: ${{ cloudbees.scm.repositoryUrl }}
-          COMMIT: ${{ cloudbees.scm.sha }}
-        shell: sh
         run: |
-          CRITICAL=10
-          HIGH=25
-          MEDIUM=0
-          LOW=0
-          TOTAL=$(( $CRITICAL + $HIGH + $MEDIUM + $LOW ))
-          cat > "$CLOUDBEES_OUTPUTS/policy-subject" << EOF
-          [{
-            "type": "vulnerability_scan",
-            "data": {
-              "summary": {
-                "by_severity": {
-                  "total": ${TOTAL},
-                  "critical": ${CRITICAL},
-                  "high": ${HIGH},
-                  "medium": ${MEDIUM},
-                  "low": ${LOW}
-                }
-              }
-            },
-            "meta": [
-              {
-                "tool": "Security Scanner 1",
-                "tool_version": "1.0",
-                "tool_type": "sast_scan",
-                "status": "COMPLETE",
-                "scanned_at": "2026-07-16T15:30:43Z",
-                "target": {
-                  "type": "repository",
-                  "commit_sha": "${COMMIT}",
-                  "repo": "${REPO}"
-                }
-              }
-            ]
-          }, {
-            "type": "sast_scan",
-            "data": {
-              "completed": true
-            },
-            "meta": [
-              {
-                "tool": "Security Scanner 1",
-                "tool_version": "1.0",
-                "tool_type": "sast_scan",
-                "status": "COMPLETE",
-                "scanned_at": "2026-07-16T15:30:43Z",
-                "target": {
-                  "type": "repository",
-                  "commit_sha": "${COMMIT}",
-                  "repo": "${REPO}"
-                }
-              }
-            ]
-          }]
-          EOF
+          echo "=== Gosec Scan Results ==="
+          echo "Critical:       ${{ steps.gosec.outputs.critical-count }}"
+          echo "Very High:      ${{ steps.gosec.outputs.very-high-count }}"
+          echo "High:           ${{ steps.gosec.outputs.high-count }}"
+          echo "Medium:         ${{ steps.gosec.outputs.medium-count }}"
+          echo "Low:            ${{ steps.gosec.outputs.low-count }}"
+          echo "Policy subject: ${{ steps.gosec.outputs.policy-subject }}"
+
   do-something:
     needs:
       - scan-and-evaluate
