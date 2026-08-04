@@ -38,20 +38,3 @@ jobs:
           echo "Low:            ${{ steps.gosec.outputs.low-count }}"
           echo "Policy subject: ${{ steps.gosec.outputs.policy-subject }}"
 
-  do-something:
-    needs:
-      - scan-and-evaluate
-    steps:
-      - name: Print policy input
-        uses: docker://alpine:latest
-        shell: sh
-        env:
-          ORG: ${{ cloudbees.org.id }}
-          ACCESS_KEY: ${{ cloudbees.api.token }}
-          URL: ${{ cloudbees.api.url }}
-          POLICY_SUBJECT: ${{ needs.scan-and-evaluate.outputs.policy-subject }}
-        run: |
-          echo "$URL"
-          echo "$ORG"
-          echo "Authorization: Bearer $ACCESS_KEY"
-          echo "$POLICY_SUBJECT"
