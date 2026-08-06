@@ -1,0 +1,40 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: gk-l3-review-test-final
+
+on:
+  workflow_dispatch:
+jobs:
+  scan-and-evaluate:
+    outputs:
+      policy-subject: ${{ steps.build-input.outputs.policy-input }}
+    steps:
+      - name: Checkout source code
+        uses: cloudbees-io/checkout@v1
+
+      - name: Run Gosec
+        id: gosec
+        uses: cloudbees-io/gosec-plugin
+        continue-on-error: true
+
+      - name: Print Gosec outputs
+        uses: docker://alpine:latest
+        run: |
+          echo "=== Gosec Scan Results ==="
+          echo "Critical:       ${{ steps.gosec.outputs.critical-count }}"
+          echo "Very High:      ${{ steps.gosec.outputs.very-high-count }}"
+          echo "High:           ${{ steps.gosec.outputs.high-count }}"
+          echo "Medium:         ${{ steps.gosec.outputs.medium-count }}"
+          echo "Low:            ${{ steps.gosec.outputs.low-count }}"
+          echo "Policy subject: ${{ steps.gosec.outputs.policy-subject }}"
+      - name: Assemble policy input
+        id: build-input
+        uses: docker://alpine:latest
+        run: |
+          printf '[%s,%s]' \
+            '${{ steps.gosec.outputs.policy-subject }}' \
+            | tee /tmp/policy-input.json
+          cp /tmp/policy-input.json "$CLOUDBEES_OUTPUTS/policy-input"
+          echo ""
+          echo "=== Combined policy input ==="
+          cat /tmp/policy-input.json
