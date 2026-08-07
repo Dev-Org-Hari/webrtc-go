@@ -16,12 +16,12 @@ jobs:
         shell: sh
         run: |
           cat > /cloudbees/workspace/policy-input.json << 'EOF'
-          [{"type":"vulnerability_scan_summary","data":{"summary":{"by_severity":{"total":0,"critical":1,"high":0,"medium":0,"low":0}}}}]
+          [{"type":"vulnerability_scan","data":{"summary":{"by_severity":{"total":0,"critical":1,"high":0,"medium":0,"low":0}}}}]
           EOF
 
       - id: evaluate-policy
         name: Evaluate policy by context
-        uses: cloudbees-io/policy-check/actions/evaluate-policy-context
+        uses: cloudbees-io/policy-check/actions/evaluate-policy-context@v1
         with:
           input-file: /cloudbees/workspace/policy-input.json
           checkpoint-type: workflow
