@@ -24,6 +24,8 @@ jobs:
         uses: cloudbees-io/policy-check/actions/evaluate-policy-context@v1
         with:
           input-file: /cloudbees/workspace/policy-input.json
+          checkpoint-type: workflow
+          checkpoint-position: exit
 
       - name: Print policy-check outputs
         uses: docker://alpine:latest
