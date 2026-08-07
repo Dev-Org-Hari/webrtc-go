@@ -21,7 +21,7 @@ jobs:
 
       - id: evaluate-policy
         name: Evaluate policy by context
-        uses: cloudbees-io/policy-check
+        uses: cloudbees-io/policy-check/actions/evaluate-policy-context@v1
         with:
           input-file: /cloudbees/workspace/policy-input.json
 
@@ -29,8 +29,9 @@ jobs:
         uses: docker://alpine:latest
         shell: sh
         run: |
-          echo "all outputs: ${{ toJSON(steps.evaluate-policy.outputs) }}"
           echo "action:                 ${{ steps.evaluate-policy.outputs.action }}"
+          echo "details:                ${{ steps.evaluate-policy.outputs.details }}"
           echo "review-channel:         ${{ steps.evaluate-policy.outputs.review-channel }}"
           echo "review-recipients:      ${{ steps.evaluate-policy.outputs.review-recipients }}"
           echo "review-timeout-minutes: ${{ steps.evaluate-policy.outputs.review-timeout-minutes }}"
+          echo "policy-sections:        ${{ steps.evaluate-policy.outputs.policy-sections }}"
