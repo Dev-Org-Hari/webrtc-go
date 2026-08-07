@@ -31,7 +31,6 @@ jobs:
         uses: docker://alpine:latest
         shell: sh
         run: |
-          echo "All output:             ${{ toJSON(steps.evaluate-policy.outputs) }}"
           echo "action:                 ${{ steps.evaluate-policy.outputs.action }}"
           echo "details:                ${{ steps.evaluate-policy.outputs.details }}"
           echo "review-channel:         ${{ steps.evaluate-policy.outputs.review-channel }}"
