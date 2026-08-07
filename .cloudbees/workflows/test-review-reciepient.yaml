@@ -21,7 +21,7 @@ jobs:
 
       - id: evaluate-policy
         name: Evaluate policy by context
-        uses: cloudbees-io/policy-check@v1.5
+        uses: cloudbees-io/policy-check
         with:
           input-file: /cloudbees/workspace/policy-input.json
 
