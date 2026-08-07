@@ -34,4 +34,3 @@ jobs:
           echo "review-channel:         ${{ steps.evaluate-policy.outputs.review-channel }}"
           echo "review-recipients:      ${{ steps.evaluate-policy.outputs.review-recipients }}"
           echo "review-timeout-minutes: ${{ steps.evaluate-policy.outputs.review-timeout-minutes }}"
-          echo "policy-sections:        ${{ steps.evaluate-policy.outputs.policy-sections }}"
