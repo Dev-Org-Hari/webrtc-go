@@ -8,57 +8,19 @@ permissions:
   scm-token-org: read
   id-token: write
 jobs:
-  # Job 1: invalid scan (wrong SHA → any_valid=false → implicit within fires WARN)
-  invalid-scan-job:
-    outputs:
-      policy-subject: ${{ steps.invalid-scan.outputs.policy-subject }}
-    steps:
-      - id: invalid-scan
-        name: Build invalid subject (wrong commit SHA)
-        uses: docker://alpine:latest
-        env:
-          REPO: ${{ cloudbees.scm.repositoryUrl }}
-        shell: sh
-        run: |
-          cat > "$CLOUDBEES_OUTPUTS/policy-subject" << EOF
-          [{
-            "type": "vulnerability_scan",
-            "data": { "summary": { "by_severity": { "total": 5, "critical": 5, "high": 0, "medium": 0, "low": 0 } } },
-            "meta": [{
-              "tool": "Security Scanner 1", "tool_version": "1.0", "tool_type": "sast_scan",
-              "status": "COMPLETE", "scanned_at": "2026-07-16T15:30:43Z",
-              "target": { "type": "repository", "commit_sha": "deadbeef00000000000000000000000000000000", "repo": "${REPO}" }
-            }]
-          }]
-          EOF
-
-  # Job 2: valid scan (correct SHA → any_valid=true → implicit within fires CONTINUE)
-  valid-scan-job:
-    needs: [invalid-scan-job]
-    outputs:
-      policy-subject: ${{ steps.valid-scan.outputs.policy-subject }}
-    steps:
-      - id: valid-scan
-        name: Build valid subject (correct commit SHA)
-        uses: docker://alpine:latest
-        env:
-          REPO: ${{ cloudbees.scm.repositoryUrl }}
-          COMMIT: ${{ cloudbees.scm.sha }}
-        shell: sh
-        run: |
-          cat > "$CLOUDBEES_OUTPUTS/policy-subject" << EOF
-          [{
-            "type": "vulnerability_scan",
-            "data": { "summary": { "by_severity": { "total": 0, "critical": 1, "high": 0, "medium": 0, "low": 0 } } },
-            "meta": [{
-              "tool": "Security Scanner 1", "tool_version": "1.0", "tool_type": "sast_scan",
-              "status": "COMPLETE", "scanned_at": "2026-07-16T15:30:43Z",
-              "target": { "type": "repository", "commit_sha": "${COMMIT}", "repo": "${REPO}" }
-            }]
-          }]
-          EOF
-
-  # Boundary exit: no data sent — must pick latest vulnerability_scan = valid scan → CONTINUE
   policy-exit:
-    needs: [valid-scan-job]
-    uses: cloudbees-io/policy-utils/evaluate-policy-context/workflow.yml@v2
+    steps:
+      - id: write-input
+        name: Write policy input file
+        uses: docker://alpine:latest
+        shell: sh
+        run: |
+          cat > /cloudbees/workspace/policy-input.json << 'EOF'
+          [{"type":"vulnerability_scan_summary","data":{"summary":{"by_severity":{"total":0,"critical":1,"high":0,"medium":0,"low":0}}}}]
+          EOF
+
+      - id: evaluate-policy
+        name: Evaluate policy by context
+        uses: cloudbees-io/policy-check@v1.5
+        with:
+          input-file: /cloudbees/workspace/policy-input.json
