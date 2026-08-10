@@ -29,6 +29,7 @@ jobs:
           echo "Low: ${{ steps.gosec-step.outputs.low-count }}"
           echo "Policy Subject: ${{ steps.gosec-step.outputs.policy-subject }}"
   publish:
+    needs: scan-and-evaluate
     steps:
       - name: Publish something
         uses: docker://alpine:latest
