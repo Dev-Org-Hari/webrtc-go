@@ -16,7 +16,9 @@ jobs:
       - name: Run Gosec Scan
         id: gosec-step
         uses: cloudbees-io/gosec-plugin@v1
-
+  print:
+    needs: scan-and-evaluate
+    steps:
       - id: print-gosec-outputs
         name: Print gosec outputs
         uses: docker://alpine:latest
