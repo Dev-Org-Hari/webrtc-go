@@ -35,3 +35,11 @@ jobs:
         uses: docker://alpine:latest
         shell: sh
         run: echo "Publishing..."
+      - name: Within step
+        uses: docker://alpine:latest
+        shell: sh
+        run: echo "Within..."
+      - name: Exit step
+        uses: docker://alpine:latest
+        shell: sh
+        run: echo "exiting..."
