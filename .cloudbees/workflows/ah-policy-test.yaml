@@ -1,0 +1,33 @@
+name: ah-policy-test
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+on:
+  workflow_dispatch:
+permissions:
+  scm-token-own: read
+  scm-token-org: read
+  id-token: write
+jobs:
+  scan-job:
+    steps:
+      - id: make-input
+        name: Generate vuln subject with criticals (would BLOCK if policy ran)
+        uses: docker://alpine:latest
+        env:
+          REPO: ${{ cloudbees.scm.repositoryUrl }}
+          COMMIT: ${{ cloudbees.scm.sha }}
+        shell: sh
+        run: |
+          cat > "$CLOUDBEES_OUTPUTS/policy-subject" << EOF
+          [{
+            "type": "vulnerability_scan",
+            "data": {
+              "summary": { "by_severity": { "total": 5, "critical": 5, "high": 0, "medium": 0, "low": 0 } }
+            },
+            "meta": [{
+              "tool": "Mock Scanner", "tool_version": "1.0", "tool_type": "vulnerability_scan",
+              "status": "COMPLETE", "scanned_at": "2026-08-06T09:00:00Z",
+              "target": { "type": "repository", "commit_sha": "${COMMIT}", "repo": "${REPO}" }
+            }]
+          }]
+          EOF
