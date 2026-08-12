@@ -1,0 +1,27 @@
+  name: demo-enhanced-required-sast-scan
+  apiVersion: automation.cloudbees.io/v1alpha1
+  kind: workflow
+  on:
+    workflow_dispatch: {}
+  permissions:
+    id-token: write
+  jobs:
+    scan-and-evaluate:
+      outputs:
+         policy-subject: ${{ steps.gosec-step.outputs.policy-subject }}
+      steps:
+        - name: checkout-source-code
+          uses: cloudbees-io/checkout@v2
+
+        - name: Run Gosec Scan
+          id: gosec-step
+          uses: cloudbees-io/gosec-plugin         
+    build: 
+      needs: scan-and-evaluate
+      steps:
+        - name: Build something
+          uses: docker://alpine:latest
+          shell: sh
+          run: echo "Building..."
+
+
