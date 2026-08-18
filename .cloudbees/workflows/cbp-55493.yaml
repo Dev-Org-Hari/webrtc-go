@@ -1,0 +1,43 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: CBP-55493
+on:
+  workflow_dispatch:
+metadata:
+  stages/v1alpha1:
+    - name: Development
+      jobs:
+        - checkout-and-secret-scan
+        - policy-check-secret-scan
+    - name: QA
+      jobs:
+        - policy-check-match-any
+jobs:
+  checkout-and-secret-scan:
+    outputs:
+      policy-subject: ${{ steps.gitleaks-step.outputs.policy-subject }}
+    steps:
+      - with:
+          provider: GitHub
+          repository: https://github.com/cbc-dev-test/webrtc-go
+          ref: main
+        uses: cloudbees-io/checkout@v1
+        name: Checkout Component 1
+      - uses: cloudbees-io/gitleaks-plugin@v1
+        name: Run Gitleaks Scan
+        id: gitleaks-step
+      - run: 'echo "Policy Subject: ${{ steps.gitleaks-step.outputs.policy-subject }}"'
+        uses: docker://alpine:3.20
+        name: Print Policy Subject
+  policy-check-secret-scan:
+    needs: checkout-and-secret-scan
+    steps:
+      - run: echo "Policy evaluation"
+        uses: docker://alpine:latest
+  policy-check-match-any:
+    needs:
+      - policy-check-secret-scan
+      - checkout-and-secret-scan
+    steps:
+      - run: echo "Policy evaluation"
+        uses: docker://alpine:latest
