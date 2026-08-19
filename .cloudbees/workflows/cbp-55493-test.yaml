@@ -37,6 +37,7 @@ jobs:
   print-policy-subject:
     needs:
       - checkout-and-secret-scan
+      - policy-check-secret-scan
     steps:
       - run: echo "$POLICY_SUBJECT"
         uses: docker://alpine:latest
