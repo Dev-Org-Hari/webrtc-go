@@ -8,7 +8,6 @@ metadata:
     - name: Development
       jobs:
         - checkout-and-secret-scan
-        - policy-check-secret-scan
     - name: QA
       jobs:
         - print-policy-subject
@@ -29,15 +28,8 @@ jobs:
       - run: 'echo "Policy Subject: ${{ steps.gitleaks-step.outputs.policy-subject }}"'
         uses: docker://alpine:3.20
         name: Print Policy Subject
-  policy-check-secret-scan:
-    needs: checkout-and-secret-scan
-    steps:
-      - run: echo "Policy evaluation"
-        uses: docker://alpine:latest
   print-policy-subject:
-    needs:
-      - checkout-and-secret-scan
-      - policy-check-secret-scan
+    needs: checkout-and-secret-scan
     steps:
       - run: echo "$POLICY_SUBJECT"
         uses: docker://alpine:latest
