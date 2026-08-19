@@ -43,4 +43,4 @@ jobs:
         uses: docker://alpine:latest
         name: Print subject data
         env:
-          POLICY_SUBJECT: ${{ needs.scan-and-store-new-table.outputs.policy-subject }}
+          POLICY_SUBJECT: ${{ needs.checkout-and-secret-scan.outputs.policy-subject }}
