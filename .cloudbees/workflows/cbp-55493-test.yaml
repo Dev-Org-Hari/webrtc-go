@@ -11,7 +11,7 @@ metadata:
         - policy-check-secret-scan
     - name: QA
       jobs:
-        - policy-check-match-any
+        - print-policy-subject
 jobs:
   checkout-and-secret-scan:
     outputs:
@@ -34,10 +34,12 @@ jobs:
     steps:
       - run: echo "Policy evaluation"
         uses: docker://alpine:latest
-  policy-check-match-any:
+  print-policy-subject:
     needs:
-      - policy-check-secret-scan
       - checkout-and-secret-scan
     steps:
-      - run: echo "Policy evaluation"
+      - run: echo "$POLICY_SUBJECT"
         uses: docker://alpine:latest
+        name: Print subject data
+        env:
+          POLICY_SUBJECT: ${{ needs.scan-and-store-new-table.outputs.policy-subject }}
