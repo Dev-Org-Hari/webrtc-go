@@ -39,8 +39,6 @@ jobs:
             }
           }]
           EOF
-          echo "Simulate a continue-on-error case"
-          exit 1
 
       - name: Print policy input
         uses: docker://alpine:latest
