@@ -42,3 +42,13 @@ jobs:
             cat "$file"                                                                                                                                                           
             echo "---"                                                                                                                                                            
           done
+
+  job-2:
+    needs: scan-and-evaluate
+    steps:
+      - id: print-hello-world
+        name: Print Hello World
+        uses: docker://alpine:latest
+        run: |
+          echo "hello world!" 
+        
