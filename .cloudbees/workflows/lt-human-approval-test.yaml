@@ -19,7 +19,7 @@ jobs:
     steps:
       - run: |
           CRITICAL=0
-          HIGH=5
+          HIGH=0
           MEDIUM=0
           LOW=0
           TOTAL=$(( $CRITICAL + $HIGH + $MEDIUM + $LOW ))
