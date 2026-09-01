@@ -36,7 +36,12 @@ jobs:
                   "low": ${LOW}
                 }
               }
-            }
+            },
+            "meta": [
+              {
+                "tool": "fake_scan"
+              }
+            ]
           }]
           EOF
         uses: docker://golang:1.20.3-alpine3.17
@@ -64,7 +69,12 @@ jobs:
                   "low": ${LOW}
                 }
               }
-            }
+            },
+            "meta": [
+              {
+                "tool": "fake_scan"
+              }
+            ]
           }]
           EOF
         uses: docker://golang:1.20.3-alpine3.17
@@ -93,7 +103,12 @@ jobs:
                   "low": ${LOW}
                 }
               }
-            }
+            },
+            "meta": [
+              {
+                "tool": "fake_scan"
+              }
+            ]
           }]
           EOF
         uses: docker://golang:1.20.3-alpine3.17
