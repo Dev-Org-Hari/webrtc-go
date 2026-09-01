@@ -11,6 +11,9 @@ metadata:
     - name: stage2_needsapproval
       jobs:
         - job
+    - name: stage3_alsoneedsapproval
+      jobs:
+        - job2
 jobs:
   job1:
     steps:
@@ -40,8 +43,36 @@ jobs:
         name: generate subject
         shell: sh
   job:
+    needs: job1
+    steps:
+      - run: |
+          CRITICAL=0
+          HIGH=5
+          MEDIUM=0
+          LOW=0
+          TOTAL=$(( $CRITICAL + $HIGH + $MEDIUM + $LOW ))
+          cat > "$CLOUDBEES_OUTPUTS/policy-subject" << EOF
+          [{
+            "type": "vulnerability_scan",
+            "data": {
+              "summary": {
+                "by_severity": {
+                  "total": ${TOTAL},
+                  "critical": ${CRITICAL},
+                  "high": ${HIGH},
+                  "medium": ${MEDIUM},
+                  "low": ${LOW}
+                }
+              }
+            }
+          }]
+          EOF
+        uses: docker://golang:1.20.3-alpine3.17
+        name: generate subject
+        shell: sh
+  job2:
     needs:
-      - job1
+      - job
     steps:
       - run: |
           CRITICAL=0
