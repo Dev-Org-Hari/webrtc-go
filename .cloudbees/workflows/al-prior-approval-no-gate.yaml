@@ -1,0 +1,22 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: al-prior-approval-no-gate
+on:
+  workflow_dispatch:
+metadata:
+  stages/v1alpha1:
+    - name: stage1-work
+      jobs:
+        - do-work
+    - name: stage2-gated-work
+      jobs:
+        - post-step
+jobs:
+  do-work:
+    steps:
+      - uses: docker://alpine:latest
+        run: echo "Stage 1 work complete, no approval gate"
+  post-step:
+    steps:
+      - uses: docker://alpine:latest
+        run: echo "This should not run - policy blocks at stage 2 entry"
