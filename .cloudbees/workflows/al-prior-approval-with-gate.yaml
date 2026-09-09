@@ -27,6 +27,7 @@ jobs:
       approvers: "alongstaffe@cloudbees.com"
       notifyAllEligibleUsers: false
   post-approval-step:
+    needs: manual-gate
     steps:
       - uses: docker://alpine:latest
         run: echo "Reached stage 2 after human approval"
