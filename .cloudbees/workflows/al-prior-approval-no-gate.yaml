@@ -17,6 +17,7 @@ jobs:
       - uses: docker://alpine:latest
         run: echo "Stage 1 work complete, no approval gate"
   post-step:
+    needs: do-work
     steps:
       - uses: docker://alpine:latest
         run: echo "This should not run - policy blocks at stage 2 entry"
