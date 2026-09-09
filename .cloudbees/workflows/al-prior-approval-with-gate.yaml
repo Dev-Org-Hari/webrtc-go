@@ -1,0 +1,32 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: al-prior-approval-with-gate
+on:
+  workflow_dispatch:
+metadata:
+  stages/v1alpha1:
+    - name: stage1-approve
+      jobs:
+        - do-work
+        - manual-gate
+    - name: stage2-gated-work
+      jobs:
+        - post-approval-step
+jobs:
+  do-work:
+    steps:
+      - uses: docker://alpine:latest
+        run: echo "Stage 1 work complete"
+  manual-gate:
+    needs: do-work
+    timeout-minutes: 1440
+    delegates: cloudbees-io/manual-approval/custom-job.yml@v1
+    with:
+      instructions: "Approve to proceed to stage 2 (CBP-58385 prior approval test)."
+      disallowLaunchByUser: false
+      approvers: ""
+      notifyAllEligibleUsers: false
+  post-approval-step:
+    steps:
+      - uses: docker://alpine:latest
+        run: echo "Reached stage 2 after human approval"
