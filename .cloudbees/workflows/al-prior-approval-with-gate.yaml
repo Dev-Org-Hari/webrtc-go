@@ -24,7 +24,7 @@ jobs:
     with:
       instructions: "Approve to proceed to stage 2 (CBP-58385 prior approval test)."
       disallowLaunchByUser: false
-      approvers: ""
+      approvers: "alongstaffe@cloudbees.com"
       notifyAllEligibleUsers: false
   post-approval-step:
     steps:
