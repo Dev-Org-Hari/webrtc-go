@@ -22,10 +22,10 @@ jobs:
     timeout-minutes: 1440
     delegates: cloudbees-io/manual-approval/custom-job.yml@v1
     with:
-      instructions: "Approve to proceed to stage 2 (CBP-58385 entry gate test)."
+      instructions: Approve to proceed to stage 2 (CBP-58385 entry gate test).
       disallowLaunchByUser: false
-      approvers: "alongstaffe@cloudbees.com"
       notifyAllEligibleUsers: false
+      approvers: 1db49f78-4578-11ed-929c-42010a83ae66,e70bcb3e-4a74-11ed-b1a3-42010a83ae66
   post-approval-step:
     needs: manual-gate
     steps:
