@@ -26,6 +26,9 @@ jobs:
           cat > "$CLOUDBEES_OUTPUTS/policy-subject" << EOF
           [{
             "type": "vulnerability_scan",
+            "meta": [
+              { "tool": "dummy-scanner" }
+            ],
             "data": {
               "summary": {
                 "by_severity": {
