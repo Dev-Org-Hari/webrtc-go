@@ -1,0 +1,27 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: cbp-69966-mid
+on:
+  workflow_call: {}
+metadata:
+  stages/v1alpha1:
+    - name: mid-stage
+      jobs:
+        - own-job-1
+        - own-job-2
+        - call-nested
+jobs:
+  own-job-1:
+    steps:
+      - name: noop
+        uses: docker://alpine:latest
+        shell: sh
+        run: echo "cbp-69966 mid own-job-1"
+  own-job-2:
+    steps:
+      - name: noop
+        uses: docker://alpine:latest
+        shell: sh
+        run: echo "cbp-69966 mid own-job-2"
+  call-nested:
+    uses: ./.cloudbees/workflows/cbp-69966-nested.yaml
