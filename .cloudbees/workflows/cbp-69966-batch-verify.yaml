@@ -1,0 +1,18 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: cbp-69966-batch-verify
+on:
+  workflow_dispatch: {}
+jobs:
+  call-leaf-1:
+    uses: ./.cloudbees/workflows/cbp-69966-leaf-1.yaml
+  call-leaf-2:
+    uses: ./.cloudbees/workflows/cbp-69966-leaf-2.yaml
+  call-leaf-3:
+    uses: ./.cloudbees/workflows/cbp-69966-leaf-3.yaml
+  call-leaf-4:
+    uses: ./.cloudbees/workflows/cbp-69966-leaf-4.yaml
+  call-leaf-5:
+    uses: ./.cloudbees/workflows/cbp-69966-leaf-5.yaml
+  call-mid:
+    uses: ./.cloudbees/workflows/cbp-69966-mid.yaml
