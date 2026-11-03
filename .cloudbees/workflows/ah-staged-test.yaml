@@ -1,0 +1,39 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: ah-staged-test
+on:
+  workflow_dispatch: {}
+metadata:
+  stages/v1alpha1:
+    - name: build
+      jobs:
+        - compile
+        - lint
+    - name: test
+      jobs:
+        - unit-test
+    - name: deploy
+      jobs:
+        - deploy-staging
+jobs:
+  compile:
+    steps:
+      - uses: docker://alpine:3.20
+        run: echo "compiling"
+  lint:
+    steps:
+      - uses: docker://alpine:3.20
+        run: echo "linting"
+  unit-test:
+    needs:
+      - compile
+      - lint
+    steps:
+      - uses: docker://alpine:3.20
+        run: echo "testing"
+  deploy-staging:
+    needs:
+      - unit-test
+    steps:
+      - uses: docker://alpine:3.20
+        run: echo "deploying"
