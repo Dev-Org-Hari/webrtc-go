@@ -1,0 +1,46 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: ah-staged-test-faninout
+on:
+  workflow_dispatch: {}
+metadata:
+  stages/v1alpha1:
+    - name: build
+      jobs:
+        - compile
+        - lint
+    - name: test
+      jobs:
+        - test-compiled-output
+        - test-lint-report
+    - name: deploy
+      jobs:
+        - deploy-staging
+jobs:
+  compile:
+    steps:
+      - uses: docker://alpine:3.20
+        run: echo "compiling"
+  lint:
+    steps:
+      - uses: docker://alpine:3.20
+        run: echo "linting"
+  test-compiled-output:
+    needs:
+      - compile
+    steps:
+      - uses: docker://alpine:3.20
+        run: echo "testing compiled output"
+  test-lint-report:
+    needs:
+      - lint
+    steps:
+      - uses: docker://alpine:3.20
+        run: echo "testing lint report"
+  deploy-staging:
+    needs:
+      - test-compiled-output
+      - test-lint-report
+    steps:
+      - uses: docker://alpine:3.20
+        run: echo "deploying"
