@@ -1,0 +1,53 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: ah-staged-test-subject
+on:
+  workflow_dispatch:
+    inputs:
+      critical:
+        type: string
+        default: "0"
+        required: true
+metadata:
+  stages/v1alpha1:
+    - name: build
+      jobs:
+        - compile
+        - lint
+    - name: test
+      jobs:
+        - unit-test
+    - name: deploy
+      jobs:
+        - deploy-staging
+jobs:
+  compile:
+    steps:
+      - uses: docker://alpine:3.20
+        run: echo "compiling"
+  lint:
+    steps:
+      - uses: docker://alpine:3.20
+        run: echo "linting"
+  unit-test:
+    needs:
+      - compile
+      - lint
+    steps:
+      - id: emit-subject
+        uses: docker://alpine:3.20
+        run: |
+          # Wait out CBP-55972: the subject hand-off returns "run not found"
+          # for roughly the first 2 minutes of a run and fails this step.
+          sleep 180
+          CRITICAL="${{ inputs.critical }}"
+          cat > "$CLOUDBEES_OUTPUTS/policy-subject" <<EOF
+          [{"type":"vulnerability_scan","meta":[{"tool":"fixture","status":"COMPLETED","target":{"type":"repository"}}],"data":{"summary":{"by_severity":{"total":${CRITICAL},"critical":${CRITICAL},"high":0,"medium":0,"low":0}}}}]
+          EOF
+          cat "$CLOUDBEES_OUTPUTS/policy-subject"
+  deploy-staging:
+    needs:
+      - unit-test
+    steps:
+      - uses: docker://alpine:3.20
+        run: echo "deploying"
