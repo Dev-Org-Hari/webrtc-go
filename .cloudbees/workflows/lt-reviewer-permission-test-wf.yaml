@@ -44,7 +44,6 @@ jobs:
             ]
           }]
           EOF
-
       - name: Print policy input
         uses: docker://alpine:latest
         shell: sh
@@ -58,3 +57,11 @@ jobs:
           echo "$ORG"
           echo "Authorization: Bearer $ACCESS_KEY"
           echo "$POLICY_SUBJECT"
+  finish-workflow:
+    needs: scan-and-evaluate
+    steps:
+      - name: Print something
+        uses: docker://alpine:latest
+        shell: sh
+        run: |
+          echo "Hello"
