@@ -1,0 +1,20 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: lt-cross-repo-subject-caller
+on:
+  workflow_dispatch: {}
+permissions:
+  scm-token-own: read
+  scm-token-org: read
+  id-token: write
+jobs:
+  generate-subject:
+    uses: Dev-Org-Hari/webrtc-go-asset/.cloudbees/workflows/rw-subject-generator.yaml@main
+  policy-evaluation:
+    needs:
+      - generate-subject
+    uses: cloudbees-io/policy-utils/evaluate-policy-context/workflow.yml@v2
+    with:
+      input-data: ${{ needs.generate-subject.outputs.policy-subject }}
+      checkpoint-type: workflow
+      checkpoint-position: within
