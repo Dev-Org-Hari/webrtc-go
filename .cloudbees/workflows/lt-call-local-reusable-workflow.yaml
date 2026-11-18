@@ -9,7 +9,7 @@ permissions:
   id-token: write
 jobs:
   generate-subject:
-    uses: ./.cloudbees/workflows/rw-subject-generator.yaml@main
+    uses: ./.cloudbees/workflows/rw-subject-generator.yaml
   policy-evaluation:
     needs:
       - generate-subject
