@@ -41,7 +41,7 @@ jobs:
               }
             },
             "meta":[{
-              "type": "something"
+              "tool": "something"
             }]
           }]
           EOF
