@@ -1,0 +1,59 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: ah-grype-information-demo-2
+on:
+  workflow_dispatch:
+permissions:
+  scm-token-own: read
+  scm-token-org: read
+  id-token: write
+jobs:
+  scan:
+    steps:
+      # Real, old Debian image: plenty of CVEs, including low-impact ones Grype rates "Negligible"
+      - name: Pull image to a tar
+        uses: docker://quay.io/skopeo/stable:latest
+        shell: sh
+        run: |
+          skopeo copy docker://docker.io/library/debian:11 docker-archive:/cloudbees/workspace/image.tar
+
+      - id: grype
+        name: Grype scan
+        uses: cloudbees-io/grype-plugin@v1
+        with:
+          binary-tar-path: /cloudbees/workspace/image.tar
+
+      - name: Print policy-subject and severity breakdown
+        uses: docker://alpine:latest
+        shell: sh
+        env:
+          SUBJECT: ${{ steps.grype.outputs.policy-subject }}
+        run: |
+          apk add --no-cache jq >/dev/null
+          echo "$SUBJECT" > /cloudbees/workspace/policy-subject.json
+          echo "--- summary ---"
+          jq -c '.. | objects | select(has("by_severity")) | .by_severity' /cloudbees/workspace/policy-subject.json
+          echo "--- findings per severity ---"
+          jq -r '.. | objects | select(has("findings")) | .findings[].severity' /cloudbees/workspace/policy-subject.json | sort | uniq -c
+          echo "--- full subject ---"
+          cat /cloudbees/workspace/policy-subject.json
+
+      - id: policy
+        name: Evaluate policies
+        continue-on-error: true
+        uses: cloudbees-io/policy-check/actions/evaluate-policy-context@v1
+        with:
+          checkpoint-type: workflow
+          checkpoint-position: within
+          input-data: ${{ steps.grype.outputs.policy-subject }}
+
+      - name: Print evaluation details
+        if: ${{ always() }}
+        uses: docker://alpine:latest
+        shell: sh
+        env:
+          ACTION: ${{ steps.policy.outputs.action }}
+          DETAILS: ${{ steps.policy.outputs.details }}
+        run: |
+          echo "action: $ACTION"
+          echo "$DETAILS"
