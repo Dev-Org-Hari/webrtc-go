@@ -42,7 +42,7 @@ jobs:
         name: Evaluate policies
         uses: cloudbees-io/policy-check/actions/evaluate-policy-context@v1
         with:
-          checkpoint: security-scan
+          checkpoint-name: security-scan
           input-data: ${{ steps.grype.outputs.policy-subject }}
 
       - name: Print evaluation details
